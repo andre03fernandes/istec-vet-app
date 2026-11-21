@@ -46,6 +46,8 @@ Os valores são medidos sobre os dados fictícios de demonstração e sobre os t
 | OB4 | Nenhuma nota clínica fechada pode ser apagada ou alterada; as correções ficam como adenda, com autor e data. | Testes que tentam alterar e apagar uma nota fechada e esperam erro | E4 |
 | OB5 | Implementar 3 a 5 casos de uso de ponta a ponta, todos cobertos por testes automáticos. | Matriz de rastreabilidade requisito → teste sem lacunas | E4 |
 
+Estes objetivos estão resumidos numa frase no **Product Goal**, o compromisso do Product Backlog (ver [backlog.md](backlog.md#1-product-goal)).
+
 ## 5. Utilizadores
 
 ### 5.1 Utilizadores diretos (usam o sistema)
@@ -66,13 +68,15 @@ Os valores são medidos sobre os dados fictícios de demonstração e sobre os t
 
 ## 6. Âmbito
 
+A sessão 2 distingue o **âmbito do produto** (o que o sistema faz: secções 6.1 e 6.2) do **âmbito do projeto** (o trabalho necessário para o entregar: secção 6.3).
+
 ### 6.1 Dentro do âmbito
 
 | Área | O que inclui |
 |------|--------------|
 | **Tutores e animais** | Registo do tutor (dados fictícios) e dos seus animais: nome, espécie, raça, data de nascimento, sexo, número de microchip (opcional), alergias conhecidas. |
 | **Agenda por veterinário** | Horário de trabalho de cada veterinário; marcação, reagendamento e cancelamento de consultas, com validação de sobreposição; vista da agenda diária de cada veterinário. |
-| **Urgências** | Registo da chegada de uma urgência com nível de triagem; fila de urgências ordenada por prioridade; atribuição a um veterinário. |
+| **Urgências** | Registo da chegada de uma urgência pela receção; atribuição do nível de triagem por um enfermeiro ou veterinário; fila de urgências ordenada por prioridade; atribuição a um veterinário. |
 | **Ficha clínica e histórico** | Nota clínica de cada consulta ou urgência (motivo, observações, diagnóstico, tratamento); fecho da nota; adendas a notas fechadas; histórico cronológico do animal. |
 | **Estados da consulta** | Marcada → em curso → concluída, ou cancelada / falta (entidade principal para o diagrama de estados do E3). |
 
@@ -95,6 +99,20 @@ Fica explicitamente fora do âmbito, e serve de lista de exclusões a incluir no
 | Autenticação real (palavras-passe, SSO) | O perfil do utilizador é escolhido num ecrã de entrada simplificado; a gestão de contas não é avaliada. |
 | Telemedicina e videoconsultas | Fora do problema descrito. |
 
+### 6.3 Âmbito do projeto
+
+O trabalho que o projeto inclui, para entregar o produto descrito acima:
+
+| Inclui | Onde está planeado |
+|--------|--------------------|
+| As entregas documentais E1 (visão e plano), E2 (requisitos e casos de uso) e E3 (design e plano de testes) | [processo.md](processo.md#6-calendário) |
+| A construção de 3 a 5 casos de uso de ponta a ponta, com testes automáticos escritos a partir do plano de testes, antes do código | [backlog.md](backlog.md#8-candidatos-aos-3-a-5-casos-de-uso-a-implementar) |
+| Integração contínua que corre os testes em cada pull request | Item T01 do [backlog](backlog.md#7-itens-técnicos) |
+| Os registos do E4: defeitos da IA, diário de engenharia e análise de impacto do pedido de mudança | [processo.md](processo.md#6-calendário) |
+| A defesa, com perguntas individuais | Sprint 2 |
+
+O projeto **não inclui**: instalar o sistema numa clínica real, migrar dados reais (folha de cálculo ou fichas em papel), formar utilizadores, nem manter o sistema depois do E4 (22/01/2027).
+
 ## 7. Restrições e pressupostos
 
 **Restrições** (impostas, não se discutem):
@@ -110,7 +128,7 @@ Fica explicitamente fora do âmbito, e serve de lista de exclusões a incluir no
 
 - Cada consulta tem uma duração fixa por tipo (por exemplo, 20 min para vacinação e 30 min para consulta geral). Os valores exatos ficam fechados no E2.
 - Uma consulta é sempre com um único veterinário.
-- A triagem das urgências usa uma escala de 3 níveis (por exemplo, emergente, urgente, pouco urgente). A escala e a regra para encaixar urgências na agenda são o principal ponto em aberto (ver risco R08 em [risks.md](risks.md)).
+- A triagem das urgências usa uma escala de 3 níveis (por exemplo, emergente, urgente, pouco urgente). A escala e a regra para encaixar urgências na agenda são o principal ponto em aberto (ver risco R08 em [riscos.md](riscos.md)).
 
 ## 8. Glossário
 
