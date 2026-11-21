@@ -25,11 +25,11 @@ Os riscos de nível **Alto** têm plano de mitigação, dono e gatilho. Os de n�
 
 **Respostas:** Evitar (mudar o plano para eliminar o risco) · Mitigar (reduzir a probabilidade ou o impacto) · Transferir (passar o impacto a terceiros) · Aceitar (assumir o risco e preparar uma contingência).
 
-**Donos:** papéis da equipa definidos em [process.md](process.md#5-papéis): **PO** (Product Owner — Diogo Consciência), **SM** (Scrum Master — Wilson Amorim), **RT** (responsável de testes e qualidade — Miguel Cruz), **RR** (responsável do repositório e da integração contínua — André Fernandes).
+**Donos:** responsabilidades da equipa definidas em [processo.md](processo.md#5-responsabilidades-na-scrum-team): **PO** (Product Owner — Diogo Consciência), **SM** (Scrum Master — Wilson Amorim), **RT** (responsável de testes e qualidade — Miguel Cruz), **RR** (responsável do repositório e da integração contínua — André Fernandes).
 
 ## 2. Registo
 
-A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou texto (o enunciado exige pelo menos dois; temos nove).
+A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou texto (o enunciado exige pelo menos dois; temos onze).
 
 | ID | Risco | IA | Tipo | Prob. | Imp. | Nível | Resposta | Dono | Nível residual |
 |----|-------|:--:|------|-------|------|-------|----------|------|----------------|
@@ -47,14 +47,16 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 | R12 | O **histórico do Git não reflete o trabalho de cada um**: um elemento concentra os commits (por exemplo, quem tem a ferramenta de IA aberta faz commit de tudo). Como o Git conta para a nota individual, os outros podem ter nota inferior à do grupo. | | Processo | Média | Catastrófico | **Alta** | Mitigar | RR | Baixa |
 | R13 | Dois elementos geram código em paralelo com IA e o agente **reescreve ficheiros inteiros** (modelo de dados, `DbContext`, migrações), criando conflitos de merge e esquemas de base de dados divergentes. | ● | Tecnológico | Média | Moderado | **Média** | Mitigar | RR | Baixa |
 | R14 | **Perda de trabalho** local não enviado para o repositório (avaria do portátil, ficheiro apagado). | | Tecnológico | Baixa | Moderado | **Baixa** | Transferir | Todos | Baixa |
+| R15 | O código gerado tem **vulnerabilidades de segurança**: por exemplo, a pesquisa de animais por nome do tutor (H14) monta a consulta SQL por concatenação de texto (injeção de SQL), ou o histórico (H9) mostra o texto das notas clínicas sem o codificar (XSS). Os testes funcionais passam na mesma. | ● | Segurança | Média | Moderado | **Média** | Mitigar | RT | Baixa |
+| R16 | O código gerado **reproduz código de terceiros protegido por licença** incompatível com a licença MIT do repositório, ou a IA sugere um pacote cuja licença não permite o uso que fazemos dele. | ● | Legal | Baixa | Moderado | **Baixa** | Mitigar | RR | Baixa |
 
 ### Mapa dos riscos na matriz
 
 | Probabilidade \ Impacto | Insignificante | Moderado | Catastrófico |
 |---|---|---|---|
 | **Alta** | — | R01, R05, R08 | **R04, R09** |
-| **Média** | — | R02, R07, R10, R11, R13 | R03, R06, R12 |
-| **Baixa** | — | R14 | — |
+| **Média** | — | R02, R07, R10, R11, R13, R15 | R03, R06, R12 |
+| **Baixa** | — | R14, R16 | — |
 
 **Riscos prioritários:** R09 (pedido de mudança em cima do prazo), R04 (não saber explicar o código), R01 (sobreposição nos limites) e R08 (regra das urgências). Os quatro tocam no que o projeto mais valoriza: testes, mudança sem regressões e defesa individual.
 
@@ -64,7 +66,7 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 
 - **Porque é concreto:** a regra "duas consultas não se sobrepõem" tem pelo menos quatro casos-limite que a IA trata de forma inconsistente: fim de uma consulta igual ao início da outra (não é conflito), consulta totalmente contida noutra, consulta que ultrapassa o fecho às 20h00 e consulta noutro veterinário à mesma hora (não é conflito).
 - **Mitigação:**
-  1. Definir no glossário que o intervalo é `[início, fim)` (ver [vision.md](vision.md#8-glossário)) e incluir essa definição no prompt.
+  1. Definir no glossário que o intervalo é `[início, fim)` (ver [visao.md](visao.md#8-glossário)) e incluir essa definição no prompt.
   2. No E3, desenhar casos de teste por **valores-limite** para a regra (fim = início, fim = início + 1 min, 19h30–20h00, 19h45–20h15).
   3. Escrever esses testes **antes** de pedir o código à IA; o pull request só é aceite com os testes a passar.
 - **Gatilho:** um teste de limite falha, ou um defeito desta regra aparece no registo de defeitos da IA.
@@ -81,7 +83,7 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 - **Resposta: Evitar.**
   - Os dados de demonstração vêm de um único ficheiro de *seed* revisto pelo grupo. Os nomes são inventados, os telefones usam um padrão impossível (por exemplo, `900 000 0xx`), os emails usam o domínio reservado `@example.com` e não há NIF.
   - Regra de equipa: nunca colar fichas, receitas ou fotografias reais em prompts, mesmo de animais próprios.
-  - Na checklist do pull request: "Não contém dados pessoais reais nem segredos."
+  - Na [Definition of Done](dod.md): "Não há dados pessoais reais, chaves de API nem palavras-passe."
 - **Gatilho:** um revisor encontra um dado que parece real.
 - **Contingência:** apagar o dado num novo commit (o histórico não é reescrito), avisar o docente e registar o incidente.
 
@@ -91,18 +93,19 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
   1. Todo o código entra por **pull request revisto por outro elemento**. O revisor tem de conseguir explicar o código e indicar o teste que o cobre; se não conseguir, não aprova.
   2. Os pares autor/revisor rodam em cada sprint, para que todos revejam código de todas as áreas.
   3. Antes da defesa: cada elemento explica aos outros um excerto escolhido ao acaso (simulação da pergunta 1 da defesa).
-  4. O diário de engenharia regista porque é que cada resposta da IA foi aceite, alterada ou rejeitada.
+  4. O diário de engenharia (E4) regista porque é que cada resposta da IA foi aceite, alterada ou rejeitada.
+  5. "Código gerado pela IA lido e percebido por uma pessoa" é um item da [Definition of Done](dod.md): sem isso, a história não está feita.
 - **Gatilho:** um pull request é aprovado sem comentários ou em menos de 5 minutos para mais de 100 linhas.
 - **Contingência:** sessão de revisão conjunta desse código.
 
 ### R05 — Funcionalidades fora do âmbito (IA)
 
-- **Resposta: Evitar.** A lista "fora do âmbito" de [vision.md](vision.md#62-fora-do-âmbito) entra em todos os prompts. Só se gera código para histórias do sprint corrente. Código sem história no backlog não entra no ramo principal. Os requisitos que a IA propuser e o grupo rejeitar alimentam a secção "requisitos rejeitados" do E2.
+- **Resposta: Evitar.** A lista "fora do âmbito" de [visao.md](visao.md#62-fora-do-âmbito) entra em todos os prompts. Só se gera código para histórias do sprint corrente. Código sem história no backlog não entra no ramo principal. Os requisitos que a IA propuser e o grupo rejeitar alimentam a secção "requisitos rejeitados" do E2.
 - **Gatilho:** aparecem no diff ficheiros ou classes que nenhuma história pede.
 
 ### R06 — Testes feitos à medida do código (IA)
 
-- **Mitigação:** os casos de teste vêm da tabela do plano de testes (E3), com valores de entrada e resultados esperados escritos pelo grupo. O código de teste entra **num commit antes** do código de produção (o teste começa a falhar). Uma asserção do E3 não pode ser alterada no mesmo pull request que altera o código de produção sem justificação escrita. O RT confere a correspondência teste ↔ caso de teste da matriz de rastreabilidade.
+- **Mitigação:** os casos de teste vêm da tabela do plano de testes (E3), com valores de entrada e resultados esperados escritos pelo grupo. O código de teste entra **num commit antes** do código de produção (o teste começa a falhar). Uma asserção do E3 não pode ser alterada no mesmo pull request que altera o código de produção sem justificação escrita. O RT confere a correspondência teste ↔ caso de teste da matriz de rastreabilidade. As duas primeiras regras estão na [Definition of Done](dod.md).
 - **Gatilho:** um teste muda o valor esperado no mesmo pull request que corrige o código.
 
 ### R07 — Testes dependentes da hora do sistema (IA)
@@ -120,7 +123,7 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 
 - **Porque é concreto:** com o calendário atualizado, o pedido de mudança é entregue na sessão 11 (21/01, turma A) e o E4 fecha a 22/01. Não há tempo para estudar o código nessa altura.
 - **Mitigação:**
-  1. **Sprint 1 fecha antes da sessão 11**: os casos de uso do E4 já estão feitos e testados quando o pedido chega (ver [process.md](process.md#4-calendário)).
+  1. **Sprint 1 fecha antes da sessão 11**: os casos de uso do E4 já estão feitos e testados quando o pedido chega (ver [processo.md](processo.md#6-calendário)).
   2. **Matriz de rastreabilidade** sempre atualizada: a análise de impacto faz-se a partir da matriz, não do código.
   3. **Testes automáticos e integração contínua** desde o primeiro pull request: os testes de regressão correm sozinhos.
   4. Regras de negócio configuráveis (duração das consultas, blocos de urgência, horários), para que uma mudança provável seja de configuração e não de código.
@@ -130,7 +133,9 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 
 ### R10 — Ferramenta de IA indisponível ou sem quota (IA)
 
-- **Mitigação:** usar como ferramenta principal uma que seja gratuita para todos (GitHub Copilot via GitHub Education) e ter uma segunda ferramenta configurada. Os artefactos (requisitos, diagramas, testes) estão em Markdown, por isso funcionam como contexto em qualquer ferramenta. Não deixar a geração de código para as 48 horas antes de um prazo.
+- **Porque é concreto:** a ferramenta que usamos é o Claude (ver o README do repositório). O plano gratuito do claude.ai, que todos os elementos podem usar, tem limites de utilização que se esgotam depressa em sessões longas, como as de geração de código perto de um prazo.
+- **Mitigação:** garantir que todos os elementos conseguem trabalhar com o plano gratuito do Claude (o enunciado exige uma ferramenta gratuita para todos) e ter uma segunda ferramenta configurada como alternativa (GitHub Copilot, gratuito para estudantes via GitHub Education). Os artefactos (requisitos, diagramas, testes) estão em Markdown, por isso funcionam como contexto em qualquer ferramenta. Não deixar a geração de código para as 48 horas antes de um prazo.
+- **Gatilho:** um elemento fica sem quota durante um sprint de construção.
 
 ### R11 — Elemento indisponível
 
@@ -149,12 +154,29 @@ A coluna **IA** marca os riscos que nascem do uso de IA para gerar código ou te
 
 - **Resposta: Transferir** o armazenamento para o GitHub, com push no fim de cada sessão de trabalho, mesmo de trabalho incompleto em ramo próprio.
 
+### R15 — Vulnerabilidades no código gerado (IA)
+
+- **Porque é concreto:** a sessão 1 cita um estudo de 2025 (Veracode, mais de 100 modelos) em que 45% das amostras de código gerado tinham vulnerabilidades do OWASP Top 10. No nosso sistema há dois pontos expostos: a pesquisa por texto livre (H14) e a apresentação de texto escrito pelos utilizadores, como as notas clínicas, no histórico (H9). Um teste funcional "encontra o animal Bolinhas" passa mesmo com a consulta montada por concatenação.
+- **Mitigação:**
+  1. Regra no ficheiro de contexto da IA (T03): acesso a dados só através do Entity Framework com consultas parametrizadas; nunca SQL montado com texto do utilizador; o texto mostrado no ecrã é sempre codificado.
+  2. No plano de testes (E3), casos de teste com entradas maliciosas nas histórias com texto livre (por exemplo, pesquisar `' OR 1=1 --` tem de devolver zero resultados e não um erro).
+  3. Análise estática dos avisos de segurança do .NET na integração contínua; um aviso de segurança novo bloqueia o merge.
+  4. Na revisão do pull request, procurar `FromSqlRaw`, `ExecuteSqlRaw` e concatenação de texto em consultas.
+- **Gatilho:** um aviso de segurança na análise estática, ou um teste com entrada maliciosa a falhar.
+- **Contingência:** reescrever o excerto à mão com consultas parametrizadas e registar o defeito da IA.
+
+### R16 — Código ou pacotes com licença incompatível (IA)
+
+- **Porque é concreto:** a sessão 1 lembra que o código gerado pode reproduzir código existente com licença. O repositório tem licença MIT; um excerto copiado de um projeto com licença GPL, ou um pacote com licença comercial, não pode ser distribuído nessas condições.
+- **Mitigação:** não pedir à IA que reproduza projetos ou bibliotecas existentes; nos pacotes NuGet, a verificação do R02 inclui a licença (só licenças permissivas, como MIT, Apache 2.0 ou BSD); um excerto gerado longo e não trivial que pareça copiado é pesquisado antes de ser aceite.
+- **Monitorização:** risco de nível baixo, por isso é apenas monitorizado na revisão dos pull requests.
+
 ## 4. Análise SWOT (de onde vieram os riscos)
 
 | | Positivo | Negativo |
 |---|---|---|
 | **Interno** | **Forças:** domínio fácil de perceber (todos já levaram ou conhecem quem leve um animal ao veterinário); âmbito pequeno; regras de agenda testáveis com valores concretos. | **Fraquezas:** regra das urgências por definir (R08); pouca experiência a rever código que não escrevemos (R04, R06); tempo limitado por serem aulas à noite (R11). |
-| **Externo** | **Oportunidades:** ferramentas de IA gratuitas para estudantes; `TimeProvider` e frameworks de teste do .NET resolvem o problema da hora (R07); o docente está disponível semanalmente para validar requisitos. | **Ameaças:** calendário comprimido no fim (R09); quotas e mudanças das ferramentas de IA (R10); RGPD e dados reais (R03); suspensões de aulas imprevistas (R11). |
+| **Externo** | **Oportunidades:** ferramentas de IA gratuitas para estudantes; `TimeProvider` e frameworks de teste do .NET resolvem o problema da hora (R07); o docente está disponível semanalmente para validar requisitos. | **Ameaças:** calendário comprimido no fim (R09); quotas e mudanças das ferramentas de IA (R10); RGPD e dados reais (R03); suspensões de aulas imprevistas (R11); vulnerabilidades típicas do código gerado (R15) e licenças de código de terceiros (R16). |
 
 As fraquezas e ameaças alimentaram o registo; as forças e oportunidades estão nas mitigações.
 
@@ -162,10 +184,10 @@ As fraquezas e ameaças alimentaram o registo; as forças e oportunidades estão
 
 | Quando | O quê | Quem |
 |--------|-------|------|
-| Início de cada sprint | Rever probabilidade e impacto de todos os riscos; fechar os que já não se aplicam; acrescentar novos | Equipa (SM conduz) |
+| Sprint Planning (início de cada sprint) | Rever probabilidade e impacto de todos os riscos; fechar os que já não se aplicam; acrescentar novos | Equipa (SM conduz) |
 | Em cada entrega (E2, E3, E4) | Verificar os gatilhos de R01, R05, R06, R08, R12 | Dono de cada risco |
-| Revisão de cada pull request | Checklist: dados fictícios (R03), sem `DateTime.Now` (R07), pacotes verificados (R02), testes antes do código (R06), revisor sabe explicar (R04) | Revisor |
+| Revisão de cada pull request | Checklist da [Definition of Done](dod.md): dados fictícios (R03), sem `DateTime.Now` (R07), pacotes verificados (R02), testes antes do código (R06), revisor sabe explicar (R04), sem SQL montado por concatenação (R15), licenças dos pacotes (R16) | Revisor |
 | 14/01/2027 | Ponto de controlo do R09: o sprint 1 está fechado? | SM |
 | 21/01/2027 | Pedido de mudança: análise de impacto pela matriz de rastreabilidade | Equipa |
 
-Os defeitos encontrados no código gerado (E4) são registados à parte, em `docs/ai-defects.md`. Quando um defeito confirma um risco (por exemplo, R01), o risco é atualizado aqui.
+Os defeitos encontrados no código gerado (E4) são registados à parte, em `docs/defeitos-ia.md`. Quando um defeito confirma um risco (por exemplo, R01), o risco é atualizado aqui.
