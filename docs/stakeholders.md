@@ -1,6 +1,6 @@
 # Análise de stakeholders
 
-> E1 · Parte 2. Os stakeholders da clínica são fictícios, mas plausíveis para o domínio (ver o contexto em [vision.md](vision.md)).
+> E1 · Parte 2. Os stakeholders da clínica são fictícios, mas plausíveis para o domínio (ver o contexto em [visao.md](visao.md)).
 > Seguimos as cinco etapas da sessão 3: identificar, classificar, posicionar na matriz poder-interesse, perceber necessidades e conflitos, e definir a comunicação.
 
 ## 1. Identificação
@@ -10,7 +10,7 @@ Há dois grupos de stakeholders: os do **domínio** (a clínica) e os do **proje
 
 | ID | Stakeholder | Categoria | Usa | Paga / decide | Gere | Mantém | É afetado |
 |----|-------------|-----------|:---:|:---:|:---:|:---:|:---:|
-| S1 | Diretora clínica (sócia-gerente da clínica) | Cliente | ● | ● | ● | | ● |
+| S1 | Diretora clínica (sócia-gerente; representa a clínica como organização) | Cliente / Organização | ● | ● | ● | | ● |
 | S2 | Médicos veterinários (3) | Utilizadores finais | ● | | | | ● |
 | S3 | Rececionistas (2) | Utilizadores finais | ● | | | | ● |
 | S4 | Enfermeiros veterinários (2) | Utilizadores finais | ● | | | | ● |
@@ -18,8 +18,20 @@ Há dois grupos de stakeholders: os do **domínio** (a clínica) e os do **proje
 | S6 | Entidades reguladoras: ordem profissional dos médicos veterinários e autoridade de proteção de dados | Stakeholders externos | | | | | |
 | S7 | Empresa de suporte informático da clínica (fictícia) | Responsáveis de manutenção | | | | ● | ● |
 | S8 | Docente da UC: faz de cliente na validação dos requisitos e avalia o projeto | Cliente do projeto / avaliador | | ● | | | |
-| S9 | Equipa de desenvolvimento (o grupo, 4 elementos) | Equipa de desenvolvimento | | | ● | ● | ● |
+| S9 | Equipa de desenvolvimento (o grupo, 4 elementos, incluindo o Product Owner e o Scrum Master) | Equipa de desenvolvimento / Gestores de projeto | | | ● | ● | ● |
 | S10 | Fornecedores das ferramentas de IA usadas para gerar código | Fornecedores externos | | | | | |
+
+**Cobertura das categorias da sessão 3.** Verificámos que nenhum tipo de stakeholder ficou esquecido:
+
+| Categoria (sessão 3) | Quem é neste projeto |
+|----------------------|----------------------|
+| Clientes | S1 Diretora clínica (encomenda o sistema); S8 Docente (cliente do projeto) |
+| Utilizadores finais | S2 Veterinários, S3 Rececionistas, S4 Enfermeiros |
+| Gestores de projeto | Dentro de S9: o Product Owner e o Scrum Master (ver [processo.md](processo.md#5-responsabilidades-na-scrum-team)). Não são uma equipa à parte: no Scrum não há hierarquia nem sub-equipas. |
+| Equipa de desenvolvimento | S9, os quatro Developers |
+| Responsáveis de manutenção | S7 Empresa de suporte informático |
+| Stakeholders externos | S5 Tutores, S6 Entidades reguladoras, S10 Fornecedores de IA |
+| Organização | A Clínica Veterinária Quatro Patas, onde o sistema é implantado e usado. Está representada por S1, que fala em nome dela; os seus processos atuais (folha de cálculo, fichas em papel) estão descritos em [visao.md](visao.md#1-contexto). |
 
 ## 2. Classificação
 
@@ -95,7 +107,7 @@ Distinguimos necessidades **explícitas** (o stakeholder pede-as) de **implícit
 | C2 | **S2 Veterinários** vs. **S6 Reguladores / S1** | Os veterinários querem **corrigir livremente** uma nota já escrita (gralhas, dados esquecidos); a rastreabilidade exige que o **registo original não se perca**. | A nota fica editável enquanto está aberta. Depois de fechada, só aceita adendas, com autor e data. O histórico mostra a nota original e as adendas. |
 | C3 | **S3 Rececionistas** vs. **S4 Enfermeiros** | Quem decide o **nível de triagem**? A receção é quem recebe o animal, mas a classificação é um ato clínico. | A receção regista a chegada com o estado "aguarda triagem". Só um perfil clínico (enfermeiro ou veterinário) atribui o nível. |
 | C4 | **S5 Tutores** vs. **S1 Diretora clínica** | O tutor quer **sempre o mesmo veterinário**; a clínica quer distribuir a carga. | Ao marcar, o sistema propõe primeiro a próxima vaga do veterinário habitual do animal, mas permite escolher outro. |
-| C5 | **S9 Equipa** vs. **S8 Docente** | A equipa (e a IA, que tende a acrescentar funcionalidades) é tentada a fazer **mais funcionalidades**; o docente valoriza **um sistema pequeno, testado e coerente**. | Lista de exclusões em [vision.md](vision.md#62-fora-do-âmbito), incluída em todos os prompts. Histórias "Won't" no backlog. |
+| C5 | **S9 Equipa** vs. **S8 Docente** | A equipa (e a IA, que tende a acrescentar funcionalidades) é tentada a fazer **mais funcionalidades**; o docente valoriza **um sistema pequeno, testado e coerente**. | Lista de exclusões em [visao.md](visao.md#62-fora-do-âmbito), incluída em todos os prompts. Histórias "Won't" no backlog. |
 
 O conflito **C1** é o mais importante: decide a regra de encaixe das urgências, que é a maior dificuldade do domínio (ver risco R08).
 
@@ -109,10 +121,10 @@ O conflito **C1** é o mais importante: decide a regra de encaixe das urgências
 | S3 Rececionistas *(simuladas com personas)* | Cenários de marcação ao telefone usados como testes de aceitação | Na escrita dos casos de teste (E3) | Operacional | RT — Miguel Cruz |
 | S6 Reguladores | Documentação: requisitos não funcionais de rastreabilidade e privacidade | Uma vez, no E2; revista se houver pedido de mudança | Legal e formal | PO — Diogo Consciência |
 | S7 Suporte informático | README com instruções de execução | No E4 | Técnica | RR — André Fernandes |
-| S9 Equipa | Canal de chat do grupo; GitHub (issues, pull requests); reunião curta | Duas vezes por semana durante os sprints; reunião no início e fim de cada sprint | Técnica | SM — Wilson Amorim |
+| S9 Equipa | Canal de chat do grupo; GitHub (issues, pull requests); reunião curta | Mensagem diária nos sprints de construção e duas vezes por semana nos sprints de especificação (Daily Scrum, ver [processo.md](processo.md#32-eventos)); reunião no início e no fim de cada sprint | Técnica | SM — Wilson Amorim |
 | S10 Fornecedores de IA | Páginas de estado e condições de uso das ferramentas | Quando houver falha ou mudança | Técnica | SM — Wilson Amorim |
 
-Os papéis da equipa estão definidos em [process.md](process.md#5-papéis).
+As responsabilidades da equipa estão definidas em [processo.md](processo.md#5-responsabilidades-na-scrum-team).
 
 ## 7. Revisão deste registo
 
